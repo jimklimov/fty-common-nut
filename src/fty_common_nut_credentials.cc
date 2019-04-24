@@ -30,63 +30,86 @@
 
 namespace nutcommon {
 
-const char *FTY_DEFAULT_CFG_FILE = "/etc/default/fty.cfg";
+static std::string s_getUniqueClientId()
+{
+    ZuuidGuard uuid(zuuid_new());
+    return std::string("fty-common-nut-") + zuuid_str(uuid.get());
+}
 
 std::vector<CredentialsSNMPv3> getCredentialsSNMPv3()
 {
+    static const std::map<secw::Snmpv3AuthProtocol, std::string> authMapping = {
+        { secw::MD5, "MD5" },
+        { secw::SHA, "SHA" }
+    } ;
+
+    static const std::map<secw::Snmpv3PrivProtocol, std::string> privMapping = {
+        { secw::DES, "DES" },
+        { secw::AES, "AES" }
+    } ;
+
+    static unsigned cpt;
+
     std::vector<CredentialsSNMPv3> creds;
 
-    zconfig_t *config = zconfig_load(FTY_DEFAULT_CFG_FILE);
-    if (config) {
-        zconfig_t *item = zconfig_locate(config, "snmpv3");
-        if (item) {
-            zconfig_t *child = zconfig_child(item);
-            while (child) {
-                const char *secName = zconfig_get(child, "secName", nullptr);
-                const char *authPassword = zconfig_get(child, "authPassword", "");
-                const char *authProtocol = zconfig_get(child, "authProtocol", "");
-                const char *privPassword = zconfig_get(child, "privPassword", "");
-                const char *privProtocol = zconfig_get(child, "privProtocol", "");
+    try {
+        auto client = secw::ConsumerAccessor(s_getUniqueClientId(), 1000, MLM_ENDPOINT);
+        auto secCreds = client.getListDocumentsWithPrivateData("default", "discovery_monitoring");
 
-                if (secName) {
-                    creds.emplace_back(secName, authPassword, authProtocol, privPassword, privProtocol);
+        for (const auto &i : secCreds) {
+            auto cred = dynamic_cast<const secw::Snmpv3*>(i.get());
+            if (cred) {
+                std::string secName = cred->getSecurityName();
+                std::string authPassword, authProtocol;
+                std::string privPassword, privProtocol;
+
+                if (cred->getSecurityLevel() != secw::NO_AUTH_NO_PRIV) {
+                    authPassword = cred->getAuthPassword();
+                    authProtocol = authMapping.at(cred->getAuthProtocol());
+
+                    if (cred->getSecurityLevel() != secw::AUTH_NO_PRIV) {
+                        privPassword = cred->getPrivPassword();
+                        privProtocol = privMapping.at(cred->getPrivProtocol());
+                    }
                 }
 
-                child = zconfig_next(child);
+                creds.emplace_back(secName, authPassword, authProtocol, privPassword, privProtocol);
             }
         }
+        log_debug("Fetched %d SNMPv3 credentials from security wallet.", creds.size());
     }
-    else {
-        log_warning("Config file '%s' could not be read.", FTY_DEFAULT_CFG_FILE);
+    catch (std::exception &e) {
+        log_warning("Failed to fetch SNMPv3 credentials from security wallet: %s", e.what());
     }
-    zconfig_destroy(&config);
 
     return creds;
 }
 
 std::vector<CredentialsSNMPv1> getCredentialsSNMPv1()
 {
+    static unsigned cpt;
+
     std::vector<CredentialsSNMPv1> creds;
 
-    zconfig_t *config = zconfig_load(FTY_DEFAULT_CFG_FILE);
-    if (config) {
-        zconfig_t *item = zconfig_locate(config, "snmp/community");
-        if (item) {
-            zconfig_t *child = zconfig_child(item);
-            while (child) {
-                const char *community = zconfig_value (child);
-                creds.emplace_back(community);
-                child = zconfig_next(child);
+    try {
+        auto client = secw::ConsumerAccessor(s_getUniqueClientId(), 1000, MLM_ENDPOINT);
+        auto secCreds = client.getListDocumentsWithPrivateData("default", "discovery_monitoring");
+
+        for (const auto &i : secCreds) {
+            auto cred = dynamic_cast<const secw::Snmpv1*>(i.get());
+            if (cred) {
+                creds.emplace_back(cred->getCommunityName());
             }
         }
-    }
-    else {
-        log_warning("Config file '%s' could not be read.", FTY_DEFAULT_CFG_FILE);
-    }
-    zconfig_destroy(&config);
 
-    // Fallback.
-    if (creds.empty()) {
+        log_debug("Fetched %d SNMPv1 credentials from security wallet.", creds.size());
+    }
+    catch (std::exception &e) {
+        log_warning("Failed to fetch SNMPv1 credentials from security wallet: %s", e.what());
+    }
+
+    if (!std::any_of(creds.cbegin(), creds.cend(), [](const nutcommon::CredentialsSNMPv1 &i) { return i.community == "public"; })) {
+        log_debug("Adding SNMPv1 community 'public' in list of credentials.");
         creds.emplace_back("public");
     }
 
