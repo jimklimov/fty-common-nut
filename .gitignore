@@ -60,6 +60,7 @@ src/platform.h.in~
 src/stamp-h1
 src/test-suite.log
 src/.dirstamp
+src/Makemodule-local.am
 
 # CMake cache
 CMakeCache.txt
