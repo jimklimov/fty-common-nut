@@ -10,5 +10,5 @@ Installation model
      -->
 
 <install>
-    <item path = "/usr/share/fty/fty-common-nut" name = "mapping.conf" package = "lib" />
+    <item path = "/usr/share/fty-common-nut" name = "mapping.conf" package = "lib" />
 </install>
