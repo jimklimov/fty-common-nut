@@ -48,8 +48,6 @@ std::vector<CredentialsSNMPv3> getCredentialsSNMPv3()
         { secw::AES, "AES" }
     } ;
 
-    static unsigned cpt;
-
     std::vector<CredentialsSNMPv3> creds;
 
     try {
@@ -87,8 +85,6 @@ std::vector<CredentialsSNMPv3> getCredentialsSNMPv3()
 
 std::vector<CredentialsSNMPv1> getCredentialsSNMPv1()
 {
-    static unsigned cpt;
-
     std::vector<CredentialsSNMPv1> creds;
 
     try {
