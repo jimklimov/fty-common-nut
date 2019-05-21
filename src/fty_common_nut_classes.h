@@ -32,13 +32,13 @@
 //  External API
 #include "../include/fty_common_nut.h"
 
+//  Extra headers
+
 //  Opaque class structures to allow forward references
 #ifndef FTY_COMMON_NUT_UTILS_PRIVATE_T_DEFINED
 typedef struct _fty_common_nut_utils_private_t fty_common_nut_utils_private_t;
 #define FTY_COMMON_NUT_UTILS_PRIVATE_T_DEFINED
 #endif
-
-//  Extra headers
 
 //  Internal API
 
