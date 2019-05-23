@@ -25,7 +25,8 @@
 #include "fty_common_nut_utils.h"
 
 namespace nutcommon {
-    std::string extractDaisyChainedKey(const std::string &key, int id = 0);
+    std::string performMapping(const KeyValues &mapping, const std::string &key, int daisychain);
+    KeyValues performMapping(const KeyValues &mapping, const KeyValues &values, int daisychain);
     KeyValues loadMapping(const std::string &file, const std::string &type);
 }
 

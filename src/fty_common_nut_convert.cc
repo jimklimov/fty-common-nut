@@ -35,23 +35,53 @@
 
 namespace nutcommon {
 
-std::string extractDaisyChainedKey(const std::string &key, int id)
+std::string performMapping(const KeyValues &mapping, const std::string &key, int daisychain)
 {
     const static std::regex prefixRegex(R"xxx(device\.([[:digit:]]+)\.(.+))xxx", std::regex::optimize);
     std::smatch matches;
 
-    if (id > 0 && std::regex_match(key, matches, prefixRegex)) {
-        if (matches[1] == std::to_string(id)) {
-            // Remove the "device.<id>." prefix.
-            return matches[2];
+    std::string transformedKey = key;
+
+    // Daisy-chained special case, need to fold it back into conventional case.
+    if (daisychain > 0 && std::regex_match(key, matches, prefixRegex)) {
+        if (matches.str(1) == std::to_string(daisychain)) {
+            // We have a "device.<id>.<property>" property, map it to either device.<property> or <property>.
+            if (mapping.find("device." + matches.str(2)) != mapping.end()) {
+                transformedKey = "device." + matches.str(2);
+            }
+            else {
+                transformedKey = matches.str(2);
+            }
         }
         else {
-            // Not the prefix we're looking for.
-            return "";
+            // Not the daisy-chained index we're looking for.
+            transformedKey = "";
         }
     }
 
-    return key;
+    auto mappedKey = mapping.find(transformedKey);
+    return mappedKey == mapping.cend() ? "" : mappedKey->second;
+}
+
+KeyValues performMapping(const KeyValues &mapping, const KeyValues &values, int daisychain)
+{
+    const std::string daisychainPrefix = "device." + std::to_string(daisychain) + ".";
+    KeyValues mappedValues;
+
+    for (auto value : values) {
+        const std::string mappedKey = performMapping(mapping, value.first, daisychain);
+
+        // Let daisy-chained device data override host device data (device.<id>.<property> => device.<property> or <property>).
+        if (daisychain > 0 && mappedKey == value.first && (values.count(daisychainPrefix + mappedKey) || values.count("device." + mappedKey))) {
+            continue;
+        }
+
+        if (!mappedKey.empty()) {
+            mappedValues.emplace(mappedKey, value.second);
+        }
+    }
+
+    return mappedValues;
 }
 
 KeyValues loadMapping(const std::string &file, const std::string &type)
@@ -161,61 +191,6 @@ void fty_common_nut_convert_test(bool verbose)
     const auto inventoryMapping = nutcommon::loadMapping("src/selftest-ro/mappingValid.conf", "inventoryMapping");
     assert(!physicsMapping.empty());
     assert(!inventoryMapping.empty());
-
-    // Test daisy-chaining key extraction.
-    {
-        const static std::vector<std::string> in = {
-            "device.count",
-            "device.mfr",
-            "device.1.key",
-            "device.1.key1",
-            "device.2.key",
-            "device.2.key2"
-        } ;
-
-        const static std::vector<std::string> expected1 = {
-            "device.count",
-            "device.mfr",
-            "key",
-            "key1",
-            "",
-            ""
-        } ;
-
-        const static std::vector<std::string> expected2 = {
-            "device.count",
-            "device.mfr",
-            "",
-            "",
-            "key",
-            "key2"
-        } ;
-
-        const static std::vector<std::string> expected3 = {
-            "device.count",
-            "device.mfr",
-            "",
-            "",
-            "",
-            ""
-        } ;
-
-        assert(in.size() == expected1.size());
-        assert(in.size() == expected2.size());
-        assert(in.size() == expected3.size());
-
-        auto itIn = in.cbegin();
-        auto itExpected1 = expected1.cbegin();
-        auto itExpected2 = expected2.cbegin();
-        auto itExpected3 = expected3.cbegin();
-        while (itIn != in.cend()) {
-            assert(nutcommon::extractDaisyChainedKey(*itIn, 0) == *itIn);
-            assert(nutcommon::extractDaisyChainedKey(*itIn, 1) == *itExpected1++);
-            assert(nutcommon::extractDaisyChainedKey(*itIn, 2) == *itExpected2++);
-            assert(nutcommon::extractDaisyChainedKey(*itIn, 3) == *itExpected3++);
-            itIn++;
-        }
-    }
 
     std::cout << "OK" << std::endl;
 }
