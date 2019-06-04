@@ -35,7 +35,7 @@
 
 namespace nutcommon {
 
-std::string performMapping(const KeyValues &mapping, const std::string &key, int daisychain)
+static std::string performSingleMapping(const KeyValues &mapping, const std::string &key, int daisychain)
 {
     const static std::regex prefixRegex(R"xxx(device\.([[:digit:]]+)\.(.+))xxx", std::regex::optimize);
     std::smatch matches;
@@ -65,22 +65,30 @@ std::string performMapping(const KeyValues &mapping, const std::string &key, int
 
 KeyValues performMapping(const KeyValues &mapping, const KeyValues &values, int daisychain)
 {
-    const std::string daisychainPrefix = "device." + std::to_string(daisychain) + ".";
+    const static std::regex overrideRegex(R"xxx(device\.([^[:digit:]].*))xxx", std::regex::optimize);
+    const std::string strDaisychain = std::to_string(daisychain);
+
     KeyValues mappedValues;
 
     for (auto value : values) {
-        const std::string mappedKey = performMapping(mapping, value.first, daisychain);
+        const std::string mappedKey = performSingleMapping(mapping, value.first, daisychain);
 
         // Let daisy-chained device data override host device data (device.<id>.<property> => device.<property> or <property>).
-        if (daisychain > 0 && mappedKey == value.first && (values.count(daisychainPrefix + mappedKey) || values.count("device." + mappedKey))) {
-            continue;
+        std::smatch matches;
+        if (daisychain > 0 && std::regex_match(value.first, matches, overrideRegex)) {
+            if (values.count("device." + strDaisychain + "." + matches.str(1))) {
+                log_trace("Ignoring overriden property '%s' during mapping.", value.first.c_str());
+                continue;
+            }
         }
 
         if (!mappedKey.empty()) {
+            log_trace("Mapped property '%s' to '%s' (value='%s').", value.first.c_str(), mappedKey.c_str(), value.second.c_str());
             mappedValues.emplace(mappedKey, value.second);
         }
     }
 
+    log_trace("Mapped %d/%d properties.", mappedValues.size(), values.size());
     return mappedValues;
 }
 
