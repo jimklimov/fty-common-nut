@@ -36,7 +36,8 @@ namespace nutcommon {
 DeviceConfigurations parseConfigurationFile(const std::string& in)
 {
     static const std::regex regexSection(R"xxx([[:blank:]]*\[([[:alnum:]_-]+)\][[:blank:]]*)xxx", std::regex::optimize);
-    static const std::regex regexOption(R"xxx([[:blank:]]*([[:alpha:]_-]+)[[:blank:]]*=[[:blank:]]*"([^"]+)"[[:blank:]]*)xxx", std::regex::optimize);
+    static const std::regex regexOptionQuoted(R"xxx([[:blank:]]*([[:alpha:]_-]+)[[:blank:]]*=[[:blank:]]*"([^"]+)"[[:blank:]]*)xxx", std::regex::optimize);
+    static const std::regex regexOptionUnquoted(R"xxx([[:blank:]]*([[:alpha:]_-]+)[[:blank:]]*=[[:blank:]]*([^"].*))xxx", std::regex::optimize);
     std::smatch matches;
     std::stringstream inStream(in);
     std::string line;
@@ -53,7 +54,7 @@ DeviceConfigurations parseConfigurationFile(const std::string& in)
             device.clear();
             device.emplace("name", matches[1].str());
         }
-        else if (std::regex_match(line, matches, regexOption)) {
+        else if (std::regex_match(line, matches, regexOptionQuoted) || std::regex_match(line, matches, regexOptionUnquoted)) {
             // Key-value pair matched, add it to the list.
             device.emplace(matches[1].str(), matches[2].str());
         }
@@ -175,12 +176,12 @@ void fty_common_nut_parse_test(bool verbose)
         mibs = "raritan-px2"
         community = "public"
 [nutdev6]
-        driver = "snmp-ups"
-        port = "10.130.32.117"
-        desc = "Eaton ePDU MA 1P IN:C20 16A OUT:20xC13, 4xC19M"
-        mibs = "eaton_epdu"
-        secLevel = "noAuthNoPriv"
-        secName = "user1")xxx";
+        driver="snmp-ups"
+        port=10.130.32.117
+        desc = Eaton ePDU MA 1P IN:C20 16A OUT:20xC13, 4xC19M
+        mibs =eaton_epdu
+        secLevel ="noAuthNoPriv"
+        secName= user1)xxx";
 
         auto result = nutcommon::parseConfigurationFile(configurationFile);
 
