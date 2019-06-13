@@ -455,6 +455,14 @@ default|default-Werror|default-with-docs|valgrind|clang-format-check)
         cd "${BASE_PWD}"
     fi
 
+echo "=== Looking for log4cplus in the buildroot 1"
+dpkg -l | grep log4cplus
+echo "=== Looking for log4cplus in the buildroot 2"
+dpkg-query --list | grep log4cplus
+echo "=== Looking for log4cplus in the buildroot 3"
+dpkg-query --list log4cplus
+echo "=== done"
+
     # Start of recipe for dependency: log4cplus
     if ! (command -v dpkg-query >/dev/null 2>&1 && dpkg-query --list log4cplus-dev >/dev/null 2>&1) || \
            (command -v brew >/dev/null 2>&1 && brew ls --versions log4cplus >/dev/null 2>&1) \
