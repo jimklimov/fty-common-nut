@@ -35,12 +35,12 @@
         <option name = "use_checkout_explicit" value = "1" />
     </target>
 
+    <classfilename use-cxx = "true" source-extension = "cc" header-extension = "h"
+        pretty-print = "no" keep-tree = "true" />
+
     <include filename = "license.xml" />
     <version major = "1" minor = "0" patch = "0" />
     <abi current = "1" revision = "0" age = "0" />
-
-    <classfilename use-cxx = "true" source-extension = "cc" header-extension = "h"
-        pretty-print = "no" keep-tree = "true" />
 
     <use project = "cxxtools"
         test = "cxxtools::Utf8Codec::Utf8Codec"
@@ -93,36 +93,24 @@
             release = "1.0-FTY-master"
             />
 
-        <use project = "fty-common" libname = "libfty_common" header = "fty_common.h"
-            repository = "https://github.com/42ity/fty-common.git"
+        <use project = "fty-common-logging" libname = "libfty_common_logging" header = "fty_log.h"
+            repository = "https://github.com/42ity/fty-common-logging.git"
             release = "master"
-            test = "fty_common_selftest" >
+            test = "fty_common_logging_selftest" >
 
-            <use project = "fty-common-logging" libname = "libfty_common_logging" header = "fty_log.h"
-                repository = "https://github.com/42ity/fty-common-logging.git"
-                release = "master"
-                test = "fty_common_logging_selftest" >
-
-                <use project = "log4cplus" header = "log4cplus/logger.h" test = "appender_test"
-                    repository = "https://github.com/42ity/log4cplus.git"
-                    release = "1.1.2-FTY-master"
-                    />
-            </use>
+            <use project = "log4cplus" header = "log4cplus/logger.h" test = "appender_test"
+                repository = "https://github.com/42ity/log4cplus.git"
+                release = "1.1.2-FTY-master"
+                />
         </use>
     </use>
-
-    <use project = "fty-common-mlm" libname = "libfty_common_mlm" header = "fty_common_mlm.h"
-            repository = "https://github.com/42ity/fty-common-mlm.git"
-            release = "master"
-            test = "fty_common_mlm_selftest"
-            />
 
     <use project = "openssl"
         header = "openssl/sha.h"
         debian_name = "libssl-dev"
         />
 
-        <use project = "czmq"
+    <use project = "czmq"
         repository = "https://github.com/42ity/czmq.git"
         release = "v3.0.2-FTY-master"
         min_major = "3" min_minor = "0" min_patch = "2" >
@@ -143,6 +131,11 @@
         repository = "https://github.com/42ity/malamute.git"
         release = "1.0-FTY-master"
         />
+
+    <use project = "fty-common-mlm" libname = "libfty_common_mlm" header = "fty_common_mlm.h"
+        repository = "https://github.com/42ity/fty-common-mlm.git"
+        release = "master"
+        test = "fty_common_mlm_selftest" />
 
     <use project = "fty-security-wallet" libname = "libfty_security_wallet" header = "fty_security_wallet.h"
         repository = "https://github.com/42ity/fty-security-wallet.git"
