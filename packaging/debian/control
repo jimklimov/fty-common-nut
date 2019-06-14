@@ -24,18 +24,19 @@ Maintainer:     fty-common-nut Developers <eatonipcopensource@eaton.com>
 Standards-Version: 4.0.1.0
 Build-Depends: debhelper (>= 9),
     pkg-config,
-    libcxxtools-dev,
-    libfty-common-dev,
+    libsodium-dev,
     libzmq3-dev,
-    libfty-proto-dev (>= 1.0.0),
-    libfty-common-mlm-dev,
-    libssl-dev,
     libczmq-dev (>= 3.0.2),
     libmlm-dev (>= 1.0.0),
     libcxxtools-dev,
     liblog4cplus-dev,
     libfty-common-logging-dev,
+    libfty-common-dev,
+    libfty-common-mlm-dev,
+    libfty-proto-dev (>= 1.0.0),
+    libssl-dev,
     libfty-security-wallet-dev,
+    gcc (>= 4.9.0), g++ (>= 4.9.0),
     asciidoc-base | asciidoc, xmlto,
     dh-autoreconf
 
@@ -51,17 +52,17 @@ Architecture: any
 Section: libdevel
 Depends:
     ${misc:Depends},
-    libcxxtools-dev,
-    libfty-common-dev,
+    libsodium-dev,
     libzmq3-dev,
-    libfty-proto-dev (>= 1.0.0),
-    libfty-common-mlm-dev,
-    libssl-dev,
     libczmq-dev (>= 3.0.2),
     libmlm-dev (>= 1.0.0),
     libcxxtools-dev,
     liblog4cplus-dev,
     libfty-common-logging-dev,
+    libfty-common-dev,
+    libfty-common-mlm-dev,
+    libfty-proto-dev (>= 1.0.0),
+    libssl-dev,
     libfty-security-wallet-dev,
     libfty-common-nut1 (= ${binary:Version})
 Description: fty-common-nut development tools

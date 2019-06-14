@@ -46,18 +46,22 @@ BuildRequires:  autoconf
 BuildRequires:  libtool
 BuildRequires:  pkgconfig
 BuildRequires:  xmlto
-BuildRequires:  gcc-c++
-BuildRequires:  cxxtools-devel
-BuildRequires:  fty-common-devel
+# Note that with current implementation of zproject use-cxx-gcc-4-9 option,
+# this effectively hardcodes the use of specifically 4.9, not allowing for
+# "4.9 or newer".
+BuildRequires:  devtoolset-3-gcc devtoolset-3-gcc-c++
+BuildRequires:  gcc-c++ >= 4.9.0
+BuildRequires:  libsodium-devel
 BuildRequires:  zeromq-devel
-BuildRequires:  fty-proto-devel >= 1.0.0
-BuildRequires:  fty-common-mlm-devel
-BuildRequires:  openssl-devel
 BuildRequires:  czmq-devel >= 3.0.2
 BuildRequires:  malamute-devel >= 1.0.0
 BuildRequires:  cxxtools-devel
 BuildRequires:  log4cplus-devel
 BuildRequires:  fty-common-logging-devel
+BuildRequires:  fty-common-devel
+BuildRequires:  fty-common-mlm-devel
+BuildRequires:  fty-proto-devel >= 1.0.0
+BuildRequires:  openssl-devel
 BuildRequires:  fty-security-wallet-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -82,17 +86,17 @@ This package contains shared library for fty-common-nut: provides common nut too
 Summary:        provides common nut tools for agents
 Group:          System/Libraries
 Requires:       libfty_common_nut1 = %{version}
-Requires:       cxxtools-devel
-Requires:       fty-common-devel
+Requires:       libsodium-devel
 Requires:       zeromq-devel
-Requires:       fty-proto-devel >= 1.0.0
-Requires:       fty-common-mlm-devel
-Requires:       openssl-devel
 Requires:       czmq-devel >= 3.0.2
 Requires:       malamute-devel >= 1.0.0
 Requires:       cxxtools-devel
 Requires:       log4cplus-devel
 Requires:       fty-common-logging-devel
+Requires:       fty-common-devel
+Requires:       fty-common-mlm-devel
+Requires:       fty-proto-devel >= 1.0.0
+Requires:       openssl-devel
 Requires:       fty-security-wallet-devel
 
 %description devel
