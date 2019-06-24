@@ -77,9 +77,15 @@ KeyValues performMapping(const KeyValues &mapping, const KeyValues &values, int 
         std::smatch matches;
         if (daisychain > 0 && std::regex_match(value.first, matches, overrideRegex)) {
             if (values.count("device." + strDaisychain + "." + matches.str(1))) {
-                log_trace("Ignoring overriden property '%s' during mapping.", value.first.c_str());
+                log_trace("Ignoring overriden property '%s' during mapping (daisy-chain override).", value.first.c_str());
                 continue;
             }
+        }
+
+        // Let input.L1.current override input.current (3-phase UPS).
+        if (value.first == "input.current" && values.count("input.L1.current")) {
+            log_trace("Ignoring overriden property '%s' during mapping (3-phase UPS input current override).", value.first.c_str());
+            continue;
         }
 
         if (!mappedKey.empty()) {
