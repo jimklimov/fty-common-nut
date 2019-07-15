@@ -104,11 +104,6 @@ std::vector<CredentialsSNMPv1> getCredentialsSNMPv1()
         log_warning("Failed to fetch SNMPv1 credentials from security wallet: %s", e.what());
     }
 
-    if (!std::any_of(creds.cbegin(), creds.cend(), [](const nutcommon::CredentialsSNMPv1 &i) { return i.community == "public"; })) {
-        log_debug("Adding SNMPv1 community 'public' in list of credentials.");
-        creds.emplace_back("public");
-    }
-
     return creds;
 }
 
