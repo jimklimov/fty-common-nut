@@ -29,12 +29,8 @@
 #include "fty_common_nut_classes.h"
 
 namespace nutcommon {
-
-static std::string s_getUniqueClientId()
-{
-    ZuuidGuard uuid(zuuid_new());
-    return std::string("fty-common-nut-") + zuuid_str(uuid.get());
-}
+	
+static const char SECW_CLIENT_ID[] = "fty-common-nut";
 
 std::vector<CredentialsSNMPv3> getCredentialsSNMPv3()
 {
@@ -51,7 +47,7 @@ std::vector<CredentialsSNMPv3> getCredentialsSNMPv3()
     std::vector<CredentialsSNMPv3> creds;
 
     try {
-        auto client = secw::ConsumerAccessor(s_getUniqueClientId(), 1000, MLM_ENDPOINT);
+        auto client = secw::ConsumerAccessor(SECW_CLIENT_ID, 1000, MLM_ENDPOINT);
         auto secCreds = client.getListDocumentsWithPrivateData("default", "discovery_monitoring");
 
         for (const auto &i : secCreds) {
@@ -88,7 +84,7 @@ std::vector<CredentialsSNMPv1> getCredentialsSNMPv1()
     std::vector<CredentialsSNMPv1> creds;
 
     try {
-        auto client = secw::ConsumerAccessor(s_getUniqueClientId(), 1000, MLM_ENDPOINT);
+        auto client = secw::ConsumerAccessor(SECW_CLIENT_ID, 1000, MLM_ENDPOINT);
         auto secCreds = client.getListDocumentsWithPrivateData("default", "discovery_monitoring");
 
         for (const auto &i : secCreds) {
