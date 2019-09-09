@@ -28,9 +28,11 @@
 
 #include "fty_common_nut_classes.h"
 
+#include "fty_common_socket_sync_client.h"
+
 namespace nutcommon {
 	
-static const char SECW_CLIENT_ID[] = "fty-common-nut";
+static const char SECW_SOCKET_PATH[] = "/tmp/secw.socket";
 
 std::vector<CredentialsSNMPv3> getCredentialsSNMPv3()
 {
@@ -47,7 +49,9 @@ std::vector<CredentialsSNMPv3> getCredentialsSNMPv3()
     std::vector<CredentialsSNMPv3> creds;
 
     try {
-        auto client = secw::ConsumerAccessor(SECW_CLIENT_ID, 1000, MLM_ENDPOINT);
+        fty::SocketSyncClient secwSyncClient(std::string(SECW_SOCKET_PATH));
+
+        auto client = secw::ConsumerAccessor(secwSyncClient);
         auto secCreds = client.getListDocumentsWithPrivateData("default", "discovery_monitoring");
 
         for (const auto &i : secCreds) {
@@ -84,7 +88,8 @@ std::vector<CredentialsSNMPv1> getCredentialsSNMPv1()
     std::vector<CredentialsSNMPv1> creds;
 
     try {
-        auto client = secw::ConsumerAccessor(SECW_CLIENT_ID, 1000, MLM_ENDPOINT);
+        fty::SocketSyncClient secwSyncClient(std::string(SECW_SOCKET_PATH));
+        auto client = secw::ConsumerAccessor(secwSyncClient);
         auto secCreds = client.getListDocumentsWithPrivateData("default", "discovery_monitoring");
 
         for (const auto &i : secCreds) {
@@ -103,4 +108,4 @@ std::vector<CredentialsSNMPv1> getCredentialsSNMPv1()
     return creds;
 }
 
-}
+} //nutcommon
