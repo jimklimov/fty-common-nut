@@ -32,7 +32,9 @@ namespace nutcommon {
 	
 static const char SECW_CLIENT_ID[] = "fty-common-nut";
 
-std::vector<CredentialsSNMPv3> getCredentialsSNMPv3()
+using DocumentFilter = std::function<bool(const secw::Document*)>;
+
+std::vector<CredentialsSNMPv3> getCredentialsSNMPv3(DocumentFilter pred)
 {
     static const std::map<secw::Snmpv3AuthProtocol, std::string> authMapping = {
         { secw::MD5, "MD5" },
@@ -51,6 +53,10 @@ std::vector<CredentialsSNMPv3> getCredentialsSNMPv3()
         auto secCreds = client.getListDocumentsWithPrivateData("default", "discovery_monitoring");
 
         for (const auto &i : secCreds) {
+            if (!pred(i.get())) {
+                continue;
+            }
+
             auto cred = dynamic_cast<const secw::Snmpv3*>(i.get());
             if (cred) {
                 std::string secName = cred->getSecurityName();
@@ -79,7 +85,7 @@ std::vector<CredentialsSNMPv3> getCredentialsSNMPv3()
     return creds;
 }
 
-std::vector<CredentialsSNMPv1> getCredentialsSNMPv1()
+std::vector<CredentialsSNMPv1> getCredentialsSNMPv1(DocumentFilter pred)
 {
     std::vector<CredentialsSNMPv1> creds;
 
@@ -88,6 +94,10 @@ std::vector<CredentialsSNMPv1> getCredentialsSNMPv1()
         auto secCreds = client.getListDocumentsWithPrivateData("default", "discovery_monitoring");
 
         for (const auto &i : secCreds) {
+            if (!pred(i.get())) {
+                continue;
+            }
+
             auto cred = dynamic_cast<const secw::Snmpv1*>(i.get());
             if (cred) {
                 creds.emplace_back(cred->getCommunityName());
@@ -101,6 +111,26 @@ std::vector<CredentialsSNMPv1> getCredentialsSNMPv1()
     }
 
     return creds;
+}
+
+std::vector<CredentialsSNMPv3> getCredentialsSNMPv3() {
+    return getCredentialsSNMPv3([](const secw::Document*) -> bool { return true; });
+}
+
+std::vector<CredentialsSNMPv1> getCredentialsSNMPv1() {
+    return getCredentialsSNMPv1([](const secw::Document*) -> bool { return true; });
+}
+
+std::vector<CredentialsSNMPv3> getCredentialsSNMPv3(const std::set<std::string> &documentIds) {
+    return getCredentialsSNMPv3([&documentIds](const secw::Document* document) -> bool {
+        return documentIds.count(document->getId());
+    });
+}
+
+std::vector<CredentialsSNMPv1> getCredentialsSNMPv1(const std::set<std::string> &documentIds) {
+    return getCredentialsSNMPv1([&documentIds](const secw::Document* document) -> bool {
+        return documentIds.count(document->getId());
+    });
 }
 
 }
