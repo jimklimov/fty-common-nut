@@ -35,6 +35,7 @@ Build-Depends: debhelper (>= 9),
     libfty-common-mlm-dev,
     libfty-proto-dev (>= 1.0.0),
     libssl-dev,
+    libfty-common-socket-dev,
     libfty-security-wallet-dev,
     gcc (>= 4.9.0), g++ (>= 4.9.0),
     asciidoc-base | asciidoc, xmlto,
@@ -63,6 +64,7 @@ Depends:
     libfty-common-mlm-dev,
     libfty-proto-dev (>= 1.0.0),
     libssl-dev,
+    libfty-common-socket-dev,
     libfty-security-wallet-dev,
     libfty-common-nut1 (= ${binary:Version})
 Description: fty-common-nut development tools

@@ -37,6 +37,7 @@
 #include <fty_common_mlm.h>
 #include <ftyproto.h>
 #include <openssl/sha.h>
+#include <fty_common_socket.h>
 #include <fty_security_wallet.h>
 
 //  FTY_COMMON_NUT version macros for compile-time API detection

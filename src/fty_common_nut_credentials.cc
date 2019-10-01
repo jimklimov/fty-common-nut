@@ -28,9 +28,11 @@
 
 #include "fty_common_nut_classes.h"
 
+#include "fty_common_socket_sync_client.h"
+
 namespace nutcommon {
 	
-static const char SECW_CLIENT_ID[] = "fty-common-nut";
+static const std::string SECW_SOCKET_PATH = "/run/fty-security-wallet/secw.socket";
 
 using DocumentFilter = std::function<bool(const secw::Document*)>;
 
@@ -49,7 +51,9 @@ std::vector<CredentialsSNMPv3> getCredentialsSNMPv3(DocumentFilter pred)
     std::vector<CredentialsSNMPv3> creds;
 
     try {
-        auto client = secw::ConsumerAccessor(SECW_CLIENT_ID, 1000, MLM_ENDPOINT);
+        fty::SocketSyncClient secwSyncClient(SECW_SOCKET_PATH);
+
+        auto client = secw::ConsumerAccessor(secwSyncClient);
         auto secCreds = client.getListDocumentsWithPrivateData("default", "discovery_monitoring");
 
         for (const auto &i : secCreds) {
@@ -90,7 +94,8 @@ std::vector<CredentialsSNMPv1> getCredentialsSNMPv1(DocumentFilter pred)
     std::vector<CredentialsSNMPv1> creds;
 
     try {
-        auto client = secw::ConsumerAccessor(SECW_CLIENT_ID, 1000, MLM_ENDPOINT);
+        fty::SocketSyncClient secwSyncClient(SECW_SOCKET_PATH);
+        auto client = secw::ConsumerAccessor(secwSyncClient);
         auto secCreds = client.getListDocumentsWithPrivateData("default", "discovery_monitoring");
 
         for (const auto &i : secCreds) {

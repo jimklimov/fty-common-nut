@@ -62,6 +62,7 @@ BuildRequires:  fty-common-devel
 BuildRequires:  fty-common-mlm-devel
 BuildRequires:  fty-proto-devel >= 1.0.0
 BuildRequires:  openssl-devel
+BuildRequires:  fty-common-socket-devel
 BuildRequires:  fty-security-wallet-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -97,6 +98,7 @@ Requires:       fty-common-devel
 Requires:       fty-common-mlm-devel
 Requires:       fty-proto-devel >= 1.0.0
 Requires:       openssl-devel
+Requires:       fty-common-socket-devel
 Requires:       fty-security-wallet-devel
 
 %description devel
