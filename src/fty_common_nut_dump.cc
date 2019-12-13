@@ -52,14 +52,13 @@ KeyValues s_dumpDeviceData(
         "-s", std::string("dumpdata-") + std::to_string(rand() % 100000 + 1)
     } ;
     std::string stdout, stderr;
-    int ret;
 
     for (const auto& it : extra) {
         args.emplace_back("-x");
         args.emplace_back(it.first+"="+it.second);
     }
 
-    ret = priv::runCommand(args, stdout, stderr, loop_nb*loop_iter_time);
+    (void)priv::runCommand(args, stdout, stderr, loop_nb*loop_iter_time);
 
     return parseDumpOutput(stdout);
 }

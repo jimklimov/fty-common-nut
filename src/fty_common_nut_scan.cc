@@ -36,7 +36,6 @@ DeviceConfigurations s_scanDeviceRange(
 {
     MlmSubprocess::Argv args = { "nut-scanner", "--quiet", "--disp_parsable", "--start_ip", scanOptions.ip_address_start };
     std::string stdout, stderr;
-    int ret;
 
     if (scanOptions.ip_address_start != scanOptions.ip_address_end) {
         args.emplace_back("--end_ip");
@@ -47,7 +46,7 @@ DeviceConfigurations s_scanDeviceRange(
         args.emplace_back(i);
     }
 
-    ret = priv::runCommand(args, stdout, stderr, scanOptions.timeout);
+    (void)priv::runCommand(args, stdout, stderr, scanOptions.timeout);
 
     return parseScannerOutput(stdout);
 }
