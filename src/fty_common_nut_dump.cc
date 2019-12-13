@@ -39,12 +39,11 @@ namespace nutcommon {
  * \param[out] out Map of key/value returned by driver with output.
  * \return 0 if success.
  */
-int s_dumpDeviceData(
+KeyValues s_dumpDeviceData(
     const std::string& driver,
     const KeyValues& extra,
     unsigned loop_nb,
-    unsigned loop_iter_time,
-    KeyValues& out)
+    unsigned loop_iter_time)
 {
     MlmSubprocess::Argv args = {
         driver,
@@ -53,30 +52,22 @@ int s_dumpDeviceData(
         "-s", std::string("dumpdata-") + std::to_string(rand() % 100000 + 1)
     } ;
     std::string stdout, stderr;
-    int ret;
 
     for (const auto& it : extra) {
         args.emplace_back("-x");
         args.emplace_back(it.first+"="+it.second);
     }
 
-    ret = priv::runCommand(args, stdout, stderr, loop_nb*loop_iter_time);
+    (void)priv::runCommand(args, stdout, stderr, loop_nb*loop_iter_time);
 
-    if (ret == 0) {
-        out = parseDumpOutput(stdout);
-
-        return out.empty() ? -1 : 0;
-    }
-
-    return ret;
+    return parseDumpOutput(stdout);
 }
 
-int dumpDeviceSNMPv3(
+KeyValues dumpDeviceSNMPv3(
     const std::string& port,
     const CredentialsSNMPv3& credentials,
     unsigned loop_nb,
-    unsigned loop_iter_time,
-    KeyValues& out)
+    unsigned loop_iter_time)
 {
     KeyValues extra = {
         { "port", port },
@@ -106,7 +97,58 @@ int dumpDeviceSNMPv3(
         extra.emplace("secLevel", "noAuthNoPriv");
     }
 
-    return s_dumpDeviceData("/lib/nut/snmp-ups", extra, loop_nb, loop_iter_time, out);
+    return s_dumpDeviceData("/lib/nut/snmp-ups", extra, loop_nb, loop_iter_time);
+}
+
+KeyValues dumpDeviceSNMPv1(
+    const std::string& port,
+    const CredentialsSNMPv1& credentials,
+    unsigned loop_nb,
+    unsigned loop_iter_time)
+{
+    KeyValues extra = {
+        { "port", port },
+        { "community", credentials.community }
+    } ;
+
+    return s_dumpDeviceData("/lib/nut/snmp-ups", extra, loop_nb, loop_iter_time);
+}
+
+KeyValues dumpDeviceNetXML(
+    const std::string& port,
+    unsigned loop_nb,
+    unsigned loop_iter_time)
+{
+    KeyValues extra = {
+        { "port", port }
+    } ;
+
+    return s_dumpDeviceData("/lib/nut/netxml-ups", extra, loop_nb, loop_iter_time);
+}
+
+KeyValues dumpDeviceDummy(
+    const std::string& device,
+    unsigned loop_nb,
+    unsigned loop_iter_time)
+{
+    KeyValues extra = {
+        { "port", device }
+    } ;
+
+    return s_dumpDeviceData("/lib/nut/dummy-ups", extra, loop_nb, loop_iter_time);
+}
+
+// Deprecated versions
+
+int dumpDeviceSNMPv3(
+    const std::string& port,
+    const CredentialsSNMPv3& credentials,
+    unsigned loop_nb,
+    unsigned loop_iter_time,
+    KeyValues& out)
+{
+    out = dumpDeviceSNMPv3(port, credentials, loop_nb, loop_iter_time);
+    return out.empty();
 }
 
 int dumpDeviceSNMPv1(
@@ -116,12 +158,8 @@ int dumpDeviceSNMPv1(
     unsigned loop_iter_time,
     KeyValues& out)
 {
-    KeyValues extra = {
-        { "port", port },
-        { "community", credentials.community }
-    } ;
-
-    return s_dumpDeviceData("/lib/nut/snmp-ups", extra, loop_nb, loop_iter_time, out);
+    out = dumpDeviceSNMPv1(port, credentials, loop_nb, loop_iter_time);
+    return out.empty();
 }
 
 int dumpDeviceNetXML(
@@ -130,11 +168,8 @@ int dumpDeviceNetXML(
     unsigned loop_iter_time,
     KeyValues& out)
 {
-    KeyValues extra = {
-        { "port", port }
-    } ;
-
-    return s_dumpDeviceData("/lib/nut/netxml-ups", extra, loop_nb, loop_iter_time, out);
+    out = dumpDeviceNetXML(port, loop_nb, loop_iter_time);
+    return out.empty();
 }
 
 int dumpDeviceDummy(
@@ -143,11 +178,8 @@ int dumpDeviceDummy(
     unsigned loop_iter_time,
     KeyValues& out)
 {
-    KeyValues extra = {
-        { "port", device }
-    } ;
-
-    return s_dumpDeviceData("/lib/nut/dummy-ups", extra, loop_nb, loop_iter_time, out);
+    out = dumpDeviceDummy(device, loop_nb, loop_iter_time);
+    return out.empty();
 }
 
 }
