@@ -315,5 +315,8 @@ ups.type: offline / line interactive
         assert(outputReference == outputData);
     }
 
+    /// XXX: we indirectly pull protobuf...
+    google::protobuf::ShutdownProtobufLibrary();
+
     std::cout << "OK" << std::endl;
 }
