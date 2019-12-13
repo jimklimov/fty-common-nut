@@ -44,6 +44,21 @@ struct ScanRangeOptions
     int timeout;
 };
 
+DeviceConfigurations scanDeviceRangeSNMPv3(
+    const ScanRangeOptions& scanOptions,
+    const CredentialsSNMPv3& credentials,
+    bool use_dmf);
+
+DeviceConfigurations scanDeviceRangeSNMPv1(
+    const ScanRangeOptions& scanOptions,
+    const CredentialsSNMPv1& credentials,
+    bool use_dmf);
+
+DeviceConfigurations scanDeviceRangeNetXML(
+    const ScanRangeOptions& scanOptions);
+
+// Deprecated versions
+
 int scanDeviceRangeSNMPv3(
     const ScanRangeOptions& scanOptions,
     const CredentialsSNMPv3& credentials,

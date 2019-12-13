@@ -39,9 +39,54 @@ namespace nutcommon {
  *
  * \param[in] port Device to scan (hostname).
  * \param[in] credentials SNMPv3 credentials to use.
- * \param[out] out Map of key/value data returned by driver.
+ * \return Map of key/value data returned by driver.
  * \return 0 if success.
  */
+KeyValues dumpDeviceSNMPv3(
+    const std::string& port,
+    const CredentialsSNMPv3& credentials,
+    unsigned loop_nb,
+    unsigned loop_iter_time);
+
+/**
+ * \brief Helper method to get data from a SNMPv1 device.
+ *
+ * \param[in] port Device to scan (hostname).
+ * \param[in] credentials SNMPv1 credentials to use.
+ * \return Map of key/value data returned by driver.
+ * \return 0 if success.
+ */
+KeyValues dumpDeviceSNMPv1(
+    const std::string& port,
+    const CredentialsSNMPv1& credentials,
+    unsigned loop_nb,
+    unsigned loop_iter_time);
+
+/**
+ * \brief Helper method to get data from a NetXML device.
+ *
+ * \param[in] port Device to scan (hostname).
+ * \return Map of key/value data returned by driver.
+ * \return 0 if success.
+ */
+KeyValues dumpDeviceNetXML(
+    const std::string& port,
+    unsigned loop_nb,
+    unsigned loop_iter_time);
+
+/**
+ * \brief Helper method to get data from a dummy device.
+ *
+ * \param[in] port Device to scan (NUT device).
+ * \return Map of key/value data returned by driver.
+ */
+KeyValues dumpDeviceDummy(
+    const std::string& device,
+    unsigned loop_nb,
+    unsigned loop_iter_time);
+
+// Deprecated versions
+
 int dumpDeviceSNMPv3(
     const std::string& port,
     const CredentialsSNMPv3& credentials,
@@ -49,14 +94,6 @@ int dumpDeviceSNMPv3(
     unsigned loop_iter_time,
     KeyValues& out);
 
-/**
- * \brief Helper method to get data from a SNMPv1 device.
- *
- * \param[in] port Device to scan (hostname).
- * \param[in] credentials SNMPv1 credentials to use.
- * \param[out] out Map of key/value data returned by driver.
- * \return 0 if success.
- */
 int dumpDeviceSNMPv1(
     const std::string& port,
     const CredentialsSNMPv1& credentials,
@@ -64,26 +101,12 @@ int dumpDeviceSNMPv1(
     unsigned loop_iter_time,
     KeyValues& out);
 
-/**
- * \brief Helper method to get data from a netxml device.
- *
- * \param[in] port Device to scan (hostname).
- * \param[out] out Map of key/value data returned by driver.
- * \return 0 if success.
- */
 int dumpDeviceNetXML(
     const std::string& port,
     unsigned loop_nb,
     unsigned loop_iter_time,
     KeyValues& out);
 
-/**
- * \brief Helper method to get data from a SNMPv3 device.
- *
- * \param[in] port Device to scan (NUT device).
- * \param[out] out Map of key/value data returned by driver.
- * \return 0 if success.
- */
 int dumpDeviceDummy(
     const std::string& device,
     unsigned loop_nb,

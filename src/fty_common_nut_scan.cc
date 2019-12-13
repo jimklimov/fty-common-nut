@@ -30,10 +30,9 @@
 
 namespace nutcommon {
 
-int s_scanDeviceRange(
+DeviceConfigurations s_scanDeviceRange(
     const ScanRangeOptions& scanOptions,
-    const MlmSubprocess::Argv& extra,
-    DeviceConfigurations& out)
+    const MlmSubprocess::Argv& extra)
 {
     MlmSubprocess::Argv args = { "nut-scanner", "--quiet", "--disp_parsable", "--start_ip", scanOptions.ip_address_start };
     std::string stdout, stderr;
@@ -50,17 +49,13 @@ int s_scanDeviceRange(
 
     ret = priv::runCommand(args, stdout, stderr, scanOptions.timeout);
 
-    auto result = parseScannerOutput(stdout);
-    out.insert(out.end(), result.begin(), result.end());
-
-    return ret;
+    return parseScannerOutput(stdout);
 }
 
-int scanDeviceRangeSNMPv3(
+DeviceConfigurations scanDeviceRangeSNMPv3(
     const ScanRangeOptions& scanOptions,
     const CredentialsSNMPv3& credentials,
-    bool use_dmf,
-    DeviceConfigurations& out)
+    bool use_dmf)
 {
     if (::getenv("BIOS_NUT_USE_DMF")) {
         use_dmf = true;
@@ -107,14 +102,13 @@ int scanDeviceRangeSNMPv3(
         extra.emplace_back("noAuthNoPriv");
     }
 
-    return s_scanDeviceRange(scanOptions, extra, out);
+    return s_scanDeviceRange(scanOptions, extra);
 }
 
-int scanDeviceRangeSNMPv1(
+DeviceConfigurations scanDeviceRangeSNMPv1(
     const ScanRangeOptions& scanOptions,
     const CredentialsSNMPv1& credentials,
-    bool use_dmf,
-    DeviceConfigurations& out)
+    bool use_dmf)
 {
     if (::getenv("BIOS_NUT_USE_DMF")) {
         use_dmf = true;
@@ -125,16 +119,45 @@ int scanDeviceRangeSNMPv1(
         "--community", credentials.community
     };
 
-    return s_scanDeviceRange(scanOptions, extra, out);
+    return s_scanDeviceRange(scanOptions, extra);
+}
+
+DeviceConfigurations scanDeviceRangeNetXML(
+    const ScanRangeOptions& scanOptions)
+{
+    MlmSubprocess::Argv extra = { "--xml_scan" };
+
+    return s_scanDeviceRange(scanOptions, extra);
+}
+
+// Deprecated versions
+
+int scanDeviceRangeSNMPv3(
+    const ScanRangeOptions& scanOptions,
+    const CredentialsSNMPv3& credentials,
+    bool use_dmf,
+    DeviceConfigurations& out)
+{
+    out = scanDeviceRangeSNMPv3(scanOptions, credentials, use_dmf);
+    return out.empty();
+}
+
+int scanDeviceRangeSNMPv1(
+    const ScanRangeOptions& scanOptions,
+    const CredentialsSNMPv1& credentials,
+    bool use_dmf,
+    DeviceConfigurations& out)
+{
+    out = scanDeviceRangeSNMPv1(scanOptions, credentials, use_dmf);
+    return out.empty();
 }
 
 int scanDeviceRangeNetXML(
     const ScanRangeOptions& scanOptions,
     DeviceConfigurations& out)
 {
-    MlmSubprocess::Argv extra = { "--xml_scan" };
-
-    return s_scanDeviceRange(scanOptions, extra, out);
+    out = scanDeviceRangeNetXML(scanOptions);
+    return out.empty();
 }
 
 }
