@@ -118,7 +118,11 @@ KeyValues parseDumpOutput(const std::string& in)
 
 std::ostream& operator<<(std::ostream &out, const nutcommon::DeviceConfiguration &cfg)
 {
-    const auto& name = cfg.at("name");
+    std::string name = "<unknown>";
+    if (cfg.count("name")) {
+        name = cfg.at("name");
+    }
+
     out << "[" << name << "]" << std::endl;
     for (const auto &i : cfg) {
         if (i.first == "name") {
