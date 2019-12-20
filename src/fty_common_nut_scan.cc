@@ -137,7 +137,8 @@ int scanDeviceRangeSNMPv3(
     bool use_dmf,
     DeviceConfigurations& out)
 {
-    out = scanDeviceRangeSNMPv3(scanOptions, credentials, use_dmf);
+    auto result = scanDeviceRangeSNMPv3(scanOptions, credentials, use_dmf);
+    out.insert(out.end(), result.begin(), result.end());
     return out.empty();
 }
 
@@ -147,7 +148,8 @@ int scanDeviceRangeSNMPv1(
     bool use_dmf,
     DeviceConfigurations& out)
 {
-    out = scanDeviceRangeSNMPv1(scanOptions, credentials, use_dmf);
+    auto result = scanDeviceRangeSNMPv1(scanOptions, credentials, use_dmf);
+    out.insert(out.end(), result.begin(), result.end());
     return out.empty();
 }
 
@@ -155,7 +157,8 @@ int scanDeviceRangeNetXML(
     const ScanRangeOptions& scanOptions,
     DeviceConfigurations& out)
 {
-    out = scanDeviceRangeNetXML(scanOptions);
+    auto result = scanDeviceRangeNetXML(scanOptions);
+    out.insert(out.end(), result.begin(), result.end());
     return out.empty();
 }
 
