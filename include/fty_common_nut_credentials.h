@@ -35,8 +35,8 @@ namespace nutcommon {
 
 struct CredentialsSNMPv1
 {
-    CredentialsSNMPv1(const secw::Id id, const std::string& comm) : document_id(id), community(comm) {}
-    secw::Id document_id;
+    CredentialsSNMPv1(const secw::Id id, const std::string& comm) : documentId(id), community(comm) {}
+    secw::Id documentId;
     std::string community;
 };
 
@@ -45,11 +45,11 @@ struct CredentialsSNMPv3
     CredentialsSNMPv3(const secw::Id id, const std::string& name,
         const std::string& authPass, const std::string& authProto,
         const std::string& privPass, const std::string& privProto
-    ) : document_id(id), secName(name),
+    ) : documentId(id), secName(name),
         authPassword(authPass), authProtocol(authProto),
         privPassword(privPass), privProtocol(privProto) {}
 
-    secw::Id document_id;
+    secw::Id documentId;
     std::string secName;
     std::string authPassword;
     std::string authProtocol;
