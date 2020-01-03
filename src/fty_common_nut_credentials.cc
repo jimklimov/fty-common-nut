@@ -31,7 +31,7 @@
 #include "fty_common_socket_sync_client.h"
 
 namespace nutcommon {
-	
+
 static const std::string SECW_SOCKET_PATH = "/run/fty-security-wallet/secw.socket";
 
 using DocumentFilter = std::function<bool(const secw::Document*)>;
@@ -63,6 +63,8 @@ std::vector<CredentialsSNMPv3> getCredentialsSNMPv3(DocumentFilter pred)
 
             auto cred = dynamic_cast<const secw::Snmpv3*>(i.get());
             if (cred) {
+                const secw::Document* doc = i.get();
+                secw::Id doc_id = doc->getId();
                 std::string secName = cred->getSecurityName();
                 std::string authPassword, authProtocol;
                 std::string privPassword, privProtocol;
@@ -77,7 +79,7 @@ std::vector<CredentialsSNMPv3> getCredentialsSNMPv3(DocumentFilter pred)
                     }
                 }
 
-                creds.emplace_back(secName, authPassword, authProtocol, privPassword, privProtocol);
+                creds.emplace_back(doc_id, secName, authPassword, authProtocol, privPassword, privProtocol);
             }
         }
         log_debug("Fetched %d SNMPv3 credentials from security wallet.", creds.size());
@@ -105,7 +107,8 @@ std::vector<CredentialsSNMPv1> getCredentialsSNMPv1(DocumentFilter pred)
 
             auto cred = dynamic_cast<const secw::Snmpv1*>(i.get());
             if (cred) {
-                creds.emplace_back(cred->getCommunityName());
+                const secw::Document* doc = i.get();
+                creds.emplace_back(doc->getId(), cred->getCommunityName());
             }
         }
 

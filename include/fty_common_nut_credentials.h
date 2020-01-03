@@ -29,24 +29,27 @@
 #ifndef FTY_COMMON_NUT_CREDENTIALS_H_INCLUDED
 #define FTY_COMMON_NUT_CREDENTIALS_H_INCLUDED
 
+#include "secw_document.h"
+
 namespace nutcommon {
 
 struct CredentialsSNMPv1
 {
-    CredentialsSNMPv1(const std::string& comm) : community(comm) {}
-
+    CredentialsSNMPv1(const secw::Id id, const std::string& comm) : document_id(id), community(comm) {}
+    secw::Id document_id;
     std::string community;
 };
 
 struct CredentialsSNMPv3
 {
-    CredentialsSNMPv3(const std::string& name,
+    CredentialsSNMPv3(const secw::Id id, const std::string& name,
         const std::string& authPass, const std::string& authProto,
         const std::string& privPass, const std::string& privProto
-    ) : secName(name),
+    ) : document_id(id), secName(name),
         authPassword(authPass), authProtocol(authProto),
         privPassword(privPass), privProtocol(privProto) {}
 
+    secw::Id document_id;
     std::string secName;
     std::string authPassword;
     std::string authProtocol;
