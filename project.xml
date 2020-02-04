@@ -52,12 +52,11 @@
         min_major = "3" min_minor = "0" min_patch = "2" >
 
         <use project = "libzmq"
-            repository = "https://github.com/42ity/libzmq.git">
+            repository = "https://github.com/42ity/libzmq.git" >
 
             <use project = "libsodium" prefix = "sodium"
                 repository = "https://github.com/42ity/libsodium.git"
-                test = "sodium_init"
-                />
+                test = "sodium_init" />
         </use>
     </use>
 
@@ -88,7 +87,7 @@
         header = "openssl/sha.h"
         debian_name = "libssl-dev"
         />
-    
+
     <use project = "fty-common-socket" libname = "libfty_common_socket" header = "fty_common_socket.h"
         repository = "https://github.com/42ity/fty-common-socket.git"
         test = "fty_common_socket_selftest" />
