@@ -1,10 +1,7 @@
    fty-common-nut -> libsodium;
    fty-common-nut -> libzmq;
    fty-common-nut -> czmq;
-   fty-common-nut -> malamute;
    fty-common-nut -> cxxtools;
-   fty-common-nut -> fty-common-logging;
-   fty-common-nut -> fty-common-mlm;
-   fty-common-nut -> fty-proto;
-   fty-common-nut -> fty-common-socket;
+   fty-common-nut -> tntdb;
+   fty-common-nut -> fty-common;
    fty-common-nut -> fty-security-wallet;

@@ -29,90 +29,31 @@
 #ifndef FTY_COMMON_NUT_DUMP_H_INCLUDED
 #define FTY_COMMON_NUT_DUMP_H_INCLUDED
 
-#include "fty_common_nut_credentials.h"
-#include "fty_common_nut_utils.h"
+#include "fty_common_nut_library.h"
 
-namespace nutcommon {
-
-/**
- * \brief Helper method to get data from a SNMPv3 device.
- *
- * \param[in] port Device to scan (hostname).
- * \param[in] credentials SNMPv3 credentials to use.
- * \return Map of key/value data returned by driver.
- * \return 0 if success.
- */
-KeyValues dumpDeviceSNMPv3(
-    const std::string& port,
-    const CredentialsSNMPv3& credentials,
-    unsigned loop_nb,
-    unsigned loop_iter_time);
+namespace fty {
+namespace nut {
 
 /**
- * \brief Helper method to get data from a SNMPv1 device.
- *
- * \param[in] port Device to scan (hostname).
- * \param[in] credentials SNMPv1 credentials to use.
- * \return Map of key/value data returned by driver.
- * \return 0 if success.
- */
-KeyValues dumpDeviceSNMPv1(
-    const std::string& port,
-    const CredentialsSNMPv1& credentials,
-    unsigned loop_nb,
-    unsigned loop_iter_time);
-
-/**
- * \brief Helper method to get data from a NetXML device.
- *
- * \param[in] port Device to scan (hostname).
- * \return Map of key/value data returned by driver.
- * \return 0 if success.
- */
-KeyValues dumpDeviceNetXML(
-    const std::string& port,
-    unsigned loop_nb,
-    unsigned loop_iter_time);
-
-/**
- * \brief Helper method to get data from a dummy device.
- *
- * \param[in] port Device to scan (NUT device).
+ * \brief Helper method to dump NUT data from a device.
+ * \param driver Driver to use.
+ * \param port Device to scan.
+ * \param loopNb Number of acquisition loops to perform.
+ * \param loopIterTime Max time per acquisition loop.
+ * \param documents Security documents to use.
+ * \param extra Extra parameters to pass to driver.
  * \return Map of key/value data returned by driver.
  */
-KeyValues dumpDeviceDummy(
-    const std::string& device,
-    unsigned loop_nb,
-    unsigned loop_iter_time);
-
-// Deprecated versions
-
-int dumpDeviceSNMPv3(
+KeyValues dumpDevice(
+    const std::string& driver,
     const std::string& port,
-    const CredentialsSNMPv3& credentials,
-    unsigned loop_nb,
-    unsigned loop_iter_time,
-    KeyValues& out);
+    unsigned loopNb,
+    unsigned loopIterTime,
+    const std::vector<secw::DocumentPtr>& documents = {},
+    const KeyValues& extra = {}
+);
 
-int dumpDeviceSNMPv1(
-    const std::string& port,
-    const CredentialsSNMPv1& credentials,
-    unsigned loop_nb,
-    unsigned loop_iter_time,
-    KeyValues& out);
-
-int dumpDeviceNetXML(
-    const std::string& port,
-    unsigned loop_nb,
-    unsigned loop_iter_time,
-    KeyValues& out);
-
-int dumpDeviceDummy(
-    const std::string& device,
-    unsigned loop_nb,
-    unsigned loop_iter_time,
-    KeyValues& out);
-
+}
 }
 
 #endif

@@ -22,11 +22,15 @@
 #ifndef FTY_COMMON_NUT_CONVERT_H_INCLUDED
 #define FTY_COMMON_NUT_CONVERT_H_INCLUDED
 
-#include "fty_common_nut_utils.h"
+#include "fty_common_nut_library.h"
 
-namespace nutcommon {
-    KeyValues performMapping(const KeyValues &mapping, const KeyValues &values, int daisychain);
-    KeyValues loadMapping(const std::string &file, const std::string &type);
+namespace fty {
+namespace nut {
+
+KeyValues performMapping(const KeyValues &mapping, const KeyValues &values, int daisychain);
+KeyValues loadMapping(const std::string &file, const std::string &type);
+
+}
 }
 
 //  Self test of this class

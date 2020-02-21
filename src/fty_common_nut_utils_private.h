@@ -24,7 +24,8 @@
 
 #include "fty_common_nut_library.h"
 
-namespace nutcommon {
+namespace fty {
+namespace nut {
 namespace priv {
 
 int runCommand(
@@ -33,6 +34,7 @@ int runCommand(
     std::string& stderr,
     int timeout);
 
+}
 }
 }
 
