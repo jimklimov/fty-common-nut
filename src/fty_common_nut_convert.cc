@@ -33,7 +33,8 @@
 #include <iostream>
 #include <regex>
 
-namespace nutcommon {
+namespace fty {
+namespace nut {
 
 static std::string performSingleMapping(const KeyValues &mapping, const std::string &key, int daisychain)
 {
@@ -172,6 +173,7 @@ KeyValues loadMapping(const std::string &file, const std::string &type)
 }
 
 }
+}
 
 //  --------------------------------------------------------------------------
 //  Self test of this class
@@ -192,7 +194,7 @@ void fty_common_nut_convert_test(bool verbose)
     for (const auto& i : invalidTestCases) {
         bool caughtException = false;
         try {
-            nutcommon::KeyValues mapping = nutcommon::loadMapping(i.first, i.second);
+            fty::nut::KeyValues mapping = fty::nut::loadMapping(i.first, i.second);
         }
         catch (...) {
             caughtException = true;
@@ -201,8 +203,8 @@ void fty_common_nut_convert_test(bool verbose)
     }
 
     // Test valid mapping cases.
-    const auto physicsMapping = nutcommon::loadMapping("src/selftest-ro/mappingValid.conf", "physicsMapping");
-    const auto inventoryMapping = nutcommon::loadMapping("src/selftest-ro/mappingValid.conf", "inventoryMapping");
+    const auto physicsMapping = fty::nut::loadMapping("src/selftest-ro/mappingValid.conf", "physicsMapping");
+    const auto inventoryMapping = fty::nut::loadMapping("src/selftest-ro/mappingValid.conf", "inventoryMapping");
     assert(!physicsMapping.empty());
     assert(!inventoryMapping.empty());
 

@@ -29,40 +29,21 @@
 #ifndef FTY_COMMON_NUT_CREDENTIALS_H_INCLUDED
 #define FTY_COMMON_NUT_CREDENTIALS_H_INCLUDED
 
-#include "secw_document.h"
+#include "fty_common_nut_library.h"
 
-namespace nutcommon {
+namespace fty {
+namespace nut {
 
-struct CredentialsSNMPv1
-{
-    CredentialsSNMPv1(const secw::Id id, const std::string& comm) : documentId(id), community(comm) {}
-    secw::Id documentId;
-    std::string community;
-};
+/**
+ * \brief Convert 42ity security wallet document to NUT configuration.
+ * \param doc Document to configure driver with.
+ * \param driver Driver to configure document with.
+ * \return NUT configuration values
+ * \throw std::runtime_error if the document can't be converted with this driver.
+ */
+KeyValues convertSecwDocumentToKeyValues(const secw::DocumentPtr& doc, const std::string& driver);
 
-struct CredentialsSNMPv3
-{
-    CredentialsSNMPv3(const secw::Id id, const std::string& name,
-        const std::string& authPass, const std::string& authProto,
-        const std::string& privPass, const std::string& privProto
-    ) : documentId(id), secName(name),
-        authPassword(authPass), authProtocol(authProto),
-        privPassword(privPass), privProtocol(privProto) {}
-
-    secw::Id documentId;
-    std::string secName;
-    std::string authPassword;
-    std::string authProtocol;
-    std::string privPassword;
-    std::string privProtocol;
-};
-
-std::vector<CredentialsSNMPv1> getCredentialsSNMPv1();
-std::vector<CredentialsSNMPv3> getCredentialsSNMPv3();
-
-std::vector<CredentialsSNMPv1> getCredentialsSNMPv1(const std::set<std::string> &documentIds);
-std::vector<CredentialsSNMPv3> getCredentialsSNMPv3(const std::set<std::string> &documentIds);
-
+}
 }
 
 #endif

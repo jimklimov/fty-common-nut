@@ -28,7 +28,8 @@
 
 #include "fty_common_nut_classes.h"
 
-namespace nutcommon {
+namespace fty {
+namespace nut {
 namespace priv {
 
 int runCommand(
@@ -63,5 +64,6 @@ int runCommand(
     return ret;
 }
 
+}
 }
 }

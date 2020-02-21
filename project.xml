@@ -60,37 +60,18 @@
         </use>
     </use>
 
-    <use project = "malamute" min_major = "1" test = "mlm_server_test"
-        repository = "https://github.com/42ity/malamute.git" />
-
     <use project = "cxxtools"
         test = "cxxtools::Utf8Codec::Utf8Codec"
         header = "cxxtools/allocator.h"
         repository = "https://github.com/42ity/cxxtools.git" />
 
-    <!-- Note: pure C projects should use fty-log/fty_logger.h, C++ use fty_log.h -->
-    <use project = "fty-common-logging" libname = "libfty_common_logging"
-        header = "fty_log.h"
-        repository = "https://github.com/42ity/fty-common-logging.git"
-        test = "fty_common_logging_selftest" />
+    <!-- We don't use tntdb, but there's a link issue requiring it... -->
+    <use project = "tntdb"
+        repository = "https://github.com/42ity/tntdb.git"
+        builddir = "tntdb" test = "tntdb::Date::gmtime" />
 
-    <use project = "fty-common-mlm" libname = "libfty_common_mlm" header = "fty_common_mlm.h"
-        repository = "https://github.com/42ity/fty-common-mlm.git"
-        test = "fty_common_mlm_selftest" />
-
-    <use project = "fty-proto" libname = "libfty_proto" header = "ftyproto.h" prefix = "fty_proto"
-        min_major = "1" min_minor = "0" min_patch = "0"
-        repository = "https://github.com/42ity/fty-proto.git"
-        test = "fty_proto_test" />
-
-    <use project = "openssl"
-        header = "openssl/sha.h"
-        debian_name = "libssl-dev"
-        />
-
-    <use project = "fty-common-socket" libname = "libfty_common_socket" header = "fty_common_socket.h"
-        repository = "https://github.com/42ity/fty-common-socket.git"
-        test = "fty_common_socket_selftest" />
+    <use project = "fty-common" libname = "libfty_common" header = "fty_common.h"
+        repository = "https://github.com/42ity/fty-common.git" />
 
     <use project = "fty-security-wallet" libname = "libfty_security_wallet" header = "fty_security_wallet.h"
         repository = "https://github.com/42ity/fty-security-wallet.git"
@@ -101,7 +82,6 @@
     <class name = "fty_common_nut_dump" selftest = "0" stable = "1" />
     <class name = "fty_common_nut_parse" stable = "1" />
     <class name = "fty_common_nut_scan" selftest = "0" stable = "1" />
-    <class name = "fty_common_nut_utils" selftest = "0" stable = "1" />
     <class name = "fty_common_nut_utils_private" private = "1" selftest = "0" stable = "1" />
 
 </project>
